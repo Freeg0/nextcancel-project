@@ -1,0 +1,50 @@
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+
+interface SearchBarProps {
+  defaultValue?: string;
+}
+
+export function SearchBar({ defaultValue = "" }: SearchBarProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const [search, setSearch] = useState(defaultValue);
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams);
+      if (value) {
+        params.set("search", value);
+        params.delete("page"); // Reset to page 1 when searching
+      } else {
+        params.delete("search");
+      }
+      router.push(`/celebrities?${params.toString()}`);
+    });
+  };
+
+  return (
+    <div className="relative max-w-md">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Input
+        type="text"
+        placeholder="Search celebrities..."
+        value={search}
+        onChange={(e) => handleSearch(e.target.value)}
+        className="pl-10"
+      />
+      {isPending && (
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        </div>
+      )}
+    </div>
+  );
+}
