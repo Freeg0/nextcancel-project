@@ -38,7 +38,7 @@ export default function SignInPage() {
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        router.push("/celebrities");
+        router.push("/");
         router.refresh();
       }
     } catch (error) {

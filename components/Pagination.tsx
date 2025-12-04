@@ -19,7 +19,7 @@ export function Pagination({
     if (searchQuery) {
       params.set("search", searchQuery);
     }
-    return `/celebrities?${params.toString()}`;
+    return `/?${params.toString()}`;
   };
 
   return (

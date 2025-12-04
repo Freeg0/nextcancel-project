@@ -15,12 +15,6 @@ export async function Navbar() {
           </Link>
           <div className="hidden md:flex gap-6">
             <Link
-              href="/celebrities"
-              className="text-sm font-medium hover:text-primary transition-colors"
-            >
-              Celebrities
-            </Link>
-            <Link
               href="/leaderboard"
               className="text-sm font-medium hover:text-primary transition-colors"
             >

@@ -26,7 +26,7 @@ export function SearchBar({ defaultValue = "" }: SearchBarProps) {
       } else {
         params.delete("search");
       }
-      router.push(`/celebrities?${params.toString()}`);
+      router.push(`/?${params.toString()}`);
     });
   };
 

@@ -104,7 +104,7 @@ export default async function CelebrityPage({ params }: CelebrityPageProps) {
                   </div>
                 ) : hasVotedForOther ? (
                   <div className="text-sm text-amber-600 bg-amber-50 p-4 rounded-md border border-amber-200">
-                    You already voted for {userVote.celebrity.displayName}. You
+                    You already voted for {userVote?.celebrity.displayName}. You
                     can only vote once.
                   </div>
                 ) : (
