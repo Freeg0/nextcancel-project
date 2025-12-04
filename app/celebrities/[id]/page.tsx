@@ -94,11 +94,7 @@ export default async function CelebrityPage({ params }: CelebrityPageProps) {
               </div>
 
               <div className="mt-8 space-y-4">
-                {!session?.user ? (
-                  <div className="text-sm text-muted-foreground bg-muted p-4 rounded-md">
-                    You must be signed in to vote
-                  </div>
-                ) : hasVotedForThisCelebrity ? (
+                {hasVotedForThisCelebrity ? (
                   <div className="text-sm text-green-600 bg-green-50 p-4 rounded-md border border-green-200">
                     You voted for {celebrity.displayName}
                   </div>
@@ -108,7 +104,10 @@ export default async function CelebrityPage({ params }: CelebrityPageProps) {
                     can only vote once.
                   </div>
                 ) : (
-                  <VoteButton celebrityId={celebrity.id} />
+                  <VoteButton
+                    celebrityId={celebrity.id}
+                    isSignedIn={!!session?.user}
+                  />
                 )}
               </div>
             </CardContent>

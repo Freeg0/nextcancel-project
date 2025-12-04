@@ -3,18 +3,26 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { SignInModal } from "@/components/SignInModal";
 import { ThumbsUp } from "lucide-react";
 
 interface VoteButtonProps {
   celebrityId: string;
+  isSignedIn?: boolean;
 }
 
-export function VoteButton({ celebrityId }: VoteButtonProps) {
+export function VoteButton({ celebrityId, isSignedIn = true }: VoteButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const handleVote = async () => {
+    if (!isSignedIn) {
+      setShowModal(true);
+      return;
+    }
+
     setError("");
 
     startTransition(async () => {
@@ -41,24 +49,27 @@ export function VoteButton({ celebrityId }: VoteButtonProps) {
   };
 
   return (
-    <div className="space-y-2">
-      {error && (
-        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-          {error}
-        </div>
-      )}
-      <Button
-        onClick={handleVote}
-        disabled={isPending}
-        size="lg"
-        className="w-full"
-      >
-        <ThumbsUp className="h-5 w-5 mr-2" />
-        {isPending ? "Voting..." : "Vote for this Celebrity"}
-      </Button>
-      <p className="text-xs text-center text-muted-foreground">
-        You can only vote once. Choose wisely!
-      </p>
-    </div>
+    <>
+      <div className="space-y-2">
+        {error && (
+          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+            {error}
+          </div>
+        )}
+        <Button
+          onClick={handleVote}
+          disabled={isPending}
+          size="lg"
+          className="w-full"
+        >
+          <ThumbsUp className="h-5 w-5 mr-2" />
+          {isPending ? "Voting..." : "Vote for this Celebrity"}
+        </Button>
+        <p className="text-xs text-center text-muted-foreground">
+          You can only vote once. Choose wisely!
+        </p>
+      </div>
+      <SignInModal isOpen={showModal} onClose={() => setShowModal(false)} />
+    </>
   );
 }
