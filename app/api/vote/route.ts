@@ -47,20 +47,33 @@ export async function POST(request: NextRequest) {
       where: { userId: session.user.id },
     });
 
-    if (existingVote) {
-      return NextResponse.json(
-        { error: "You have already voted" },
-        { status: 400 }
-      );
-    }
+    let vote;
 
-    // Create vote (unique constraint on userId ensures only one vote per user)
-    const vote = await db.vote.create({
-      data: {
-        userId: session.user.id,
-        celebrityId,
-      },
-    });
+    if (existingVote) {
+      // Check if user is trying to vote for the same celebrity
+      if (existingVote.celebrityId === celebrityId) {
+        return NextResponse.json(
+          { error: "You have already voted for this celebrity" },
+          { status: 400 }
+        );
+      }
+
+      // Update existing vote to new celebrity
+      vote = await db.vote.update({
+        where: { userId: session.user.id },
+        data: {
+          celebrityId,
+        },
+      });
+    } else {
+      // Create new vote
+      vote = await db.vote.create({
+        data: {
+          userId: session.user.id,
+          celebrityId,
+        },
+      });
+    }
 
     return NextResponse.json(
       {

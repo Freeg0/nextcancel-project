@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -39,14 +40,28 @@ export default function SignUpPage() {
 
       if (!response.ok) {
         setError(data.error || "Signup failed");
+        setIsLoading(false);
         return;
       }
 
-      // Redirect to signin page
-      router.push("/auth/signin?registered=true");
+      // Automatically sign in the user with their new credentials
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        setError("Account created but sign in failed. Please sign in manually.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Redirect to homepage
+      router.push("/");
+      router.refresh();
     } catch (error) {
       setError("An error occurred. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };

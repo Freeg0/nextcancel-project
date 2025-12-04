@@ -98,15 +98,15 @@ export default async function CelebrityPage({ params }: CelebrityPageProps) {
                   <div className="text-sm text-green-600 bg-green-50 p-4 rounded-md border border-green-200">
                     You voted for {celebrity.displayName}
                   </div>
-                ) : hasVotedForOther ? (
-                  <div className="text-sm text-amber-600 bg-amber-50 p-4 rounded-md border border-amber-200">
-                    You already voted for {userVote?.celebrity.displayName}. You
-                    can only vote once.
-                  </div>
                 ) : (
                   <VoteButton
                     celebrityId={celebrity.id}
+                    celebrityName={celebrity.displayName}
                     isSignedIn={!!session?.user}
+                    hasVotedForOther={hasVotedForOther}
+                    currentVotedCelebrityName={
+                      userVote?.celebrity.displayName || ""
+                    }
                   />
                 )}
               </div>
