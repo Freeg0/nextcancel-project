@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  emailVerified DateTime?
+  isAdmin       Boolean   @default(false)
+  votes         Vote[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Celebrity {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   @default("french-influencer")
+  description String?
+  imageUrl    String?
+  socialLinks Json?
+  isActive    Boolean  @default(true)
+  totalVotes  Int      @default(0)
+  votes       Vote[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([totalVotes])
+}
+
+model Season {
+  id        String    @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean   @default(true)
+  votes     Vote[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([isActive])
+}
+
+model Vote {
+  id          String    @id @default(cuid())
+  userId      String
+  celebrityId String
+  seasonId    String
+  votedAt     DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  celebrity Celebrity @relation(fields: [celebrityId], references: [id], onDelete: Cascade)
+  season    Season    @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, seasonId])
+  @@index([celebrityId])
+  @@index([seasonId])
+}
